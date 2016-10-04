@@ -18,7 +18,7 @@ import com.datastax.driver.core.{ ProtocolVersion, Row => DriverRow }
 import com.datastax.spark.connector.ColumnRef
 import com.datastax.spark.connector.cql.TableDef
 import com.datastax.spark.connector.rdd.reader.{RowReader, RowReaderFactory}
-import com.datastax.spark.connector.GettableData
+import com.datastax.spark.connector.{GettableData, CassandraRowMetadata}
 
 /** A container for a 'raw' row from the java driver, to be deserialized. */
 case class UnreadRow(row: DriverRow, columnNames: Array[String], table: TableDef) {
@@ -38,9 +38,16 @@ class DeferringRowReader(table: TableDef, selectedColumns: IndexedSeq[ColumnRef]
 
   override def neededColumns: Option[Seq[ColumnRef]] = None // TODO or selected columns?
 
-  override def read(row: DriverRow, columns: Array[String]): UnreadRow = {
-    assert(row.getColumnDefinitions().size() >= columns.size, "Not enough columns available in row")
-    UnreadRow(row, columns, table)
+  override def read(row: DriverRow, rowMetaData: CassandraRowMetadata): UnreadRow = {
+    assert(row.getColumnDefinitions().size() >= rowMetaData.columnNames.size, "Not enough columns available in row")
+
+    val length = rowMetaData.columnNames.length
+    var i = 0
+    val data = new Array[String](length)
+
+    rowMetaData.columnNames.copyToArray(data)
+
+    UnreadRow(row, data, table)
   }
 }
 
