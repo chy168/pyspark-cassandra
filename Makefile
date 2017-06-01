@@ -102,8 +102,8 @@ define test-integration-for-version
 			--master local[*] \
 			--driver-memory 512m \
 			--conf spark.cassandra.connection.host="localhost" \
-			--jars target/scala-2.10/pyspark-cassandra-assembly-$(VERSION).jar \
-			--py-files target/scala-2.10/pyspark-cassandra-assembly-$(VERSION).jar \
+			--jars target/scala-2.11/pyspark-cassandra-assembly-$(VERSION).jar \
+			--py-files target/scala-2.11/pyspark-cassandra-assembly-$(VERSION).jar \
 			python/pyspark_cassandra/tests.py
 			
 	echo ======================================================================
@@ -115,7 +115,7 @@ dist: clean-pyc
 	sbt assembly
 	cd python ; \
 		find . -mindepth 2 -name '*.py' -print | \
-		zip ../target/scala-2.10/pyspark-cassandra-assembly-$(VERSION).jar -@
+		zip ../target/scala-2.11/pyspark-cassandra-assembly-$(VERSION).jar -@
 
 
 all: clean dist
@@ -128,11 +128,11 @@ publish: clean
 	# push the python source files into the jar
 	cd python ; \
 		find . -mindepth 2 -name '*.py' -print | \
-		zip ../target/scala-2.10/pyspark-cassandra_2.10-$(VERSION).jar -@
+		zip ../target/scala-2.11/pyspark-cassandra_2.11-$(VERSION).jar -@
 
 	# copy it to the right name, and update the jar in the zip
-	cp target/scala-2.10/pyspark-cassandra{_2.10,}-$(VERSION).jar
-	cd target/scala-2.10 ;\
+	cp target/scala-2.11/pyspark-cassandra{_2.11,}-$(VERSION).jar
+	cd target/scala-2.11 ;\
 		zip ../pyspark-cassandra-$(VERSION).zip pyspark-cassandra-$(VERSION).jar
 
 	# send the package to spark-packages
