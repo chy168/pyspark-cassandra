@@ -40,6 +40,7 @@ PySpark Cassandra is used with python 2.7, python 3.3 and 3.4.
 
 ### Scala
 PySpark Cassandra is currently only packaged for Scala 2.10.
+
 In this fork, there is branch #scala-2.11, you can get the testing configuration and build for scala-2.11.
 
 
